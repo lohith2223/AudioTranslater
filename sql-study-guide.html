@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Mastery – 300 Problems</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e28;
+    --border: #252a38;
+    --accent: #f0b429;
+    --accent2: #38bdf8;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --brain: #e879f9;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --dim: #94a3b8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Lora', Georgia, serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  .hero { position: relative; padding: 80px 40px 60px; text-align: center; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse 80% 60% at 50% -10%, #1e2a4a 0%, transparent 70%); }
+  .hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.6s 0.1s forwards; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 6vw, 5rem); line-height: 1; letter-spacing: -2px; color: #fff; opacity: 0; animation: fadeUp 0.6s 0.2s forwards; }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); margin-top: 16px; opacity: 0; animation: fadeUp 0.6s 0.35s forwards; }
+  .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 40px; opacity: 0; animation: fadeUp 0.6s 0.5s forwards; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+  .legend { display: flex; justify-content: center; gap: 28px; padding: 22px 40px; background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot-yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .dot-red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .dot-brain { background: var(--brain); box-shadow: 0 0 6px var(--brain); }
+  main { max-width: 1400px; margin: 0 auto; padding: 48px 32px; }
+  .section { margin-bottom: 56px; opacity: 0; transform: translateY(24px); animation: fadeUp 0.5s forwards; }
+  .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .section-header::before { content: ''; display: block; width: 3px; height: 22px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--accent); color: #000; padding: 3px 9px; border-radius: 3px; font-weight: 500; letter-spacing: 1px; flex-shrink: 0; }
+  .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.3rem; color: #fff; letter-spacing: -0.5px; }
+  .section-count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+  .section-toggle { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1; padding: 0 4px; transition: transform 0.2s, color 0.2s; }
+  .section-toggle:hover { color: var(--text); }
+  .section-toggle.collapsed { transform: rotate(-90deg); }
+  .section-body.hidden { display: none; }
+  .progress-section { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .progress-bar-wrap { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; width: 0%; transition: width 0.4s ease; }
+  .progress-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; min-width: 50px; text-align: right; }
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  thead { background: var(--surface2); }
+  thead th { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  td { padding: 13px 16px; vertical-align: middle; }
+  .col-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); width: 44px; text-align: center; }
+  .col-problem { font-family: 'Lora', serif; color: var(--text); line-height: 1.5; }
+  .col-difficulty { width: 110px; text-align: center; }
+  .col-status { width: 90px; text-align: center; }
+  .col-notes { min-width: 180px; }
+  .col-notes-inner { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); min-height: 28px; width: 100%; display: block; cursor: text; transition: border-color 0.2s; outline: none; }
+  .col-notes-inner::placeholder { color: var(--muted); }
+  .col-notes-inner:focus { border-color: var(--accent2); }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.5px; white-space: nowrap; }
+  .badge-easy { background: rgba(74,222,128,0.12); color: var(--green); border: 1px solid rgba(74,222,128,0.25); }
+  .badge-medium { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+  .badge-hard { background: rgba(248,113,113,0.12); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+  .badge-brain { background: rgba(232,121,249,0.12); color: var(--brain); border: 1px solid rgba(232,121,249,0.25); }
+  .check-wrap { display: flex; justify-content: center; }
+  .check-wrap input[type="checkbox"] { appearance: none; width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; position: relative; transition: all 0.15s; flex-shrink: 0; }
+  .check-wrap input[type="checkbox"]:checked { background: var(--green); border-color: var(--green); }
+  .check-wrap input[type="checkbox"]:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #000; font-size: 11px; font-weight: bold; }
+  .check-wrap input[type="checkbox"]:hover { border-color: var(--green); }
+  .row-easy { background: rgba(74,222,128,0.02); }
+  .row-medium { background: rgba(251,191,36,0.02); }
+  .row-hard { background: rgba(248,113,113,0.02); }
+  .row-brain { background: rgba(232,121,249,0.02); }
+  .completed-row td { opacity: 0.4; }
+  .top-controls { display: flex; gap: 12px; padding: 16px 32px; background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; }
+  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; }
+  #search { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 9px 12px 9px 36px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s; }
+  #search::placeholder { color: var(--muted); }
+  #search:focus { border-color: var(--accent2); }
+  .filter-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-btn { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 7px 14px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; transition: all 0.15s; letter-spacing: 0.5px; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+  .filter-btn[data-f="easy"].active { border-color: var(--green); color: var(--green); }
+  .filter-btn[data-f="medium"].active { border-color: var(--yellow); color: var(--yellow); }
+  .filter-btn[data-f="hard"].active { border-color: var(--red); color: var(--red); }
+  .filter-btn[data-f="brain"].active { border-color: var(--brain); color: var(--brain); }
+  .global-progress { padding: 20px 32px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .gp-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .gp-bar-wrap { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; min-width: 100px; }
+  .gp-bar { height: 100%; background: linear-gradient(90deg, var(--green), var(--accent), var(--accent2)); border-radius: 3px; width: 0%; transition: width 0.5s ease; }
+  .gp-num { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--accent); white-space: nowrap; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 700px) { .hero { padding: 48px 20px 40px; } main { padding: 24px 16px; } .top-controls { padding: 12px 16px; } .global-progress { padding: 14px 16px; } .legend { padding: 16px 20px; gap: 16px; } td, th { padding: 10px 12px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">// SQL Mastery Curriculum</div>
+  <h1>300 <span>SQL</span> Problems</h1>
+  <div class="hero-sub">30 modules · beginner to expert · track your progress</div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">30</div><div class="stat-label">Modules</div></div>
+    <div class="stat"><div class="stat-num">300</div><div class="stat-label">Problems</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Levels</div></div>
+    <div class="stat"><div class="stat-num" id="global-done">0</div><div class="stat-label">Solved</div></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-green"></div>🟢 Easy</div>
+  <div class="legend-item"><div class="dot dot-yellow"></div>🟡 Medium</div>
+  <div class="legend-item"><div class="dot dot-red"></div>🔴 Hard</div>
+  <div class="legend-item"><div class="dot dot-brain"></div>🧠 Expert</div>
+</div>
+
+<div class="top-controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input id="search" type="text" placeholder="Search problems...">
+  </div>
+  <div class="filter-btns">
+    <button class="filter-btn active" data-f="all">All</button>
+    <button class="filter-btn" data-f="easy">Easy</button>
+    <button class="filter-btn" data-f="medium">Medium</button>
+    <button class="filter-btn" data-f="hard">Hard</button>
+    <button class="filter-btn" data-f="brain">Expert</button>
+    <button class="filter-btn" data-f="unsolved">Unsolved</button>
+  </div>
+</div>
+
+<div class="global-progress">
+  <span class="gp-label">Overall Progress</span>
+  <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar"></div></div>
+  <span class="gp-num" id="gp-num">0 / 300</span>
+</div>
+
+<main id="main"></main>
+
+<script>
+const SECTIONS = [
+  { num:"01", title:"SQL Fundamentals", problems:[
+    {d:"easy",text:"Identify the primary key column of every table using system catalog."},
+    {d:"easy",text:"List all tables that do not have a primary key."},
+    {d:"easy",text:"Find columns that allow NULL values in employees."},
+    {d:"easy",text:"Show all UNIQUE constraints in the database."},
+    {d:"medium",text:"Detect tables that have composite primary keys."},
+    {d:"medium",text:"List foreign keys and their referenced parent tables."},
+    {d:"medium",text:"Find columns that are both UNIQUE and NOT NULL."},
+    {d:"hard",text:"Identify orphan records in a child table (FK exists but parent row missing)."},
+    {d:"hard",text:"Generate a dependency order for tables based on foreign keys (for safe deletion)."},
+    {d:"brain",text:"Produce an ER-style relationship result (table → PK → FK → referenced table) using only metadata queries."},
+  ]},
+  { num:"02", title:"Data Types", problems:[
+    {d:"easy",text:"Create a table storing INT, DECIMAL, VARCHAR, DATE, BOOLEAN."},
+    {d:"easy",text:"Insert rows with valid DATE and TIMESTAMP values."},
+    {d:"easy",text:"Cast a VARCHAR salary column to DECIMAL and select it."},
+    {d:"easy",text:"Find rows where a numeric column is NULL."},
+    {d:"medium",text:"Detect rows where numeric data is stored in a text column."},
+    {d:"medium",text:"Compare results of DATE vs TIMESTAMP in a range filter."},
+    {d:"medium",text:"Convert epoch seconds to a readable timestamp."},
+    {d:"hard",text:"Validate UUID format using a pattern filter."},
+    {d:"hard",text:"Find rows where implicit type casting prevents index usage."},
+    {d:"brain",text:"Calculate total storage size per column using system metadata."},
+  ]},
+  { num:"03", title:"Basic SQL Commands", problems:[
+    {d:"easy",text:"Insert multiple rows into employees."},
+    {d:"easy",text:"Update all salaries by 5%."},
+    {d:"easy",text:"Delete employees who have NULL department."},
+    {d:"easy",text:"Truncate a staging table safely."},
+    {d:"medium",text:"Insert into employees from contractors using INSERT…SELECT."},
+    {d:"medium",text:"Update department name using a JOIN."},
+    {d:"medium",text:"Delete duplicate rows keeping the latest by timestamp."},
+    {d:"hard",text:"Perform an UPSERT (update if exists else insert)."},
+    {d:"hard",text:"Rename a column and change its datatype without losing data."},
+    {d:"brain",text:"Write an idempotent load query that can run multiple times without duplicating data."},
+  ]},
+  { num:"04", title:"Filtering & Sorting", problems:[
+    {d:"easy",text:"Select employees with salary > 50,000."},
+    {d:"easy",text:"Find names starting with 'S'."},
+    {d:"easy",text:"Sort employees by hire_date descending."},
+    {d:"easy",text:"Filter salaries between 30k and 70k."},
+    {d:"medium",text:"Return top 10 highest-paid employees."},
+    {d:"medium",text:"Perform case-insensitive search on email."},
+    {d:"medium",text:"Sort by department ASC and salary DESC."},
+    {d:"hard",text:"Implement pagination using LIMIT/OFFSET."},
+    {d:"hard",text:"Implement keyset pagination using last seen salary."},
+    {d:"brain",text:"Return top 3 salaries per department using only filtering and sorting logic (no window functions)."},
+  ]},
+  { num:"05", title:"Aggregate Functions", problems:[
+    {d:"easy",text:"Count total employees."},
+    {d:"easy",text:"Find maximum salary."},
+    {d:"easy",text:"Calculate average salary per department."},
+    {d:"easy",text:"Count distinct job roles."},
+    {d:"medium",text:"List departments with more than 20 employees."},
+    {d:"medium",text:"Find total salary expense per department."},
+    {d:"medium",text:"Count employees hired per year."},
+    {d:"hard",text:"Compute percentage contribution of each department to total salary."},
+    {d:"hard",text:"Conditional aggregation: count employees by gender in each department."},
+    {d:"brain",text:"Find median salary per department without using window functions."},
+  ]},
+  { num:"06", title:"Joins", problems:[
+    {d:"easy",text:"List employees with their department names (INNER JOIN)."},
+    {d:"easy",text:"Show all employees even if they don't have a department (LEFT JOIN)."},
+    {d:"easy",text:"Show all departments with no employees."},
+    {d:"easy",text:"SELF JOIN: list employees with their manager names."},
+    {d:"medium",text:'Find employees working in the same department as "Alice".'},
+    {d:"medium",text:"Return department-wise employee counts including empty departments."},
+    {d:"medium",text:"Join three tables: employees → departments → locations."},
+    {d:"hard",text:"Anti-join: find customers who never placed an order."},
+    {d:"hard",text:"Semi-join: list customers who placed at least one order using EXISTS."},
+    {d:"brain",text:"Find pairs of employees in the same department with equal salaries (avoid duplicates)."},
+  ]},
+  { num:"07", title:"Subqueries", problems:[
+    {d:"easy",text:"Find employees earning more than average salary (scalar subquery)."},
+    {d:"easy",text:"List departments where average salary > 60k."},
+    {d:"easy",text:"Use subquery in SELECT to show department max salary."},
+    {d:"easy",text:"Use subquery in FROM to compute department totals."},
+    {d:"medium",text:"Correlated subquery to find employees earning above their department average."},
+    {d:"medium",text:"Use EXISTS to find departments with employees."},
+    {d:"medium",text:"Use NOT EXISTS to find departments without employees."},
+    {d:"hard",text:"Find the second highest salary using subquery."},
+    {d:"hard",text:"Compare EXISTS vs IN performance for large tables."},
+    {d:"brain",text:"Return employees whose salary is in the top 10% of their department using correlated subquery only."},
+  ]},
+  { num:"08", title:"Window Functions", problems:[
+    {d:"easy",text:"Assign row numbers to employees by hire date."},
+    {d:"easy",text:"Rank employees by salary (RANK)."},
+    {d:"easy",text:"Dense rank employees by salary."},
+    {d:"easy",text:"Partition row numbers by department."},
+    {d:"medium",text:"Find highest-paid employee per department using ROW_NUMBER."},
+    {d:"medium",text:"Find top 3 salaries per department."},
+    {d:"medium",text:"Compute department-wise running total salary."},
+    {d:"hard",text:"Identify duplicate records using ROW_NUMBER."},
+    {d:"hard",text:"Find employees whose salary increased compared to previous hire (LAG)."},
+    {d:"brain",text:"Compute 7-day moving average of daily sales."},
+  ]},
+  { num:"09", title:"Advanced Window Functions", problems:[
+    {d:"easy",text:"Use LAG to show previous salary per employee."},
+    {d:"easy",text:"Use LEAD to show next hire date."},
+    {d:"easy",text:"FIRST_VALUE salary per department."},
+    {d:"easy",text:"LAST_VALUE salary per department."},
+    {d:"medium",text:"Calculate salary difference between current and previous employee in same dept."},
+    {d:"medium",text:"Identify consecutive login days per user."},
+    {d:"medium",text:"Running total of orders per customer."},
+    {d:"hard",text:"Detect gaps in order dates per customer."},
+    {d:"hard",text:"Find longest streak of consecutive active days per user."},
+    {d:"brain",text:"Sessionize user activity using 30-minute inactivity window."},
+  ]},
+  { num:"10", title:"Advanced Aggregations", problems:[
+    {d:"easy",text:"Compute total sales per region using GROUP BY."},
+    {d:"easy",text:"Use ROLLUP to get region and grand total."},
+    {d:"easy",text:"Use CUBE for region and product totals."},
+    {d:"easy",text:"Identify rows produced by GROUPING SETS."},
+    {d:"medium",text:"Calculate subtotals and grand totals in one query."},
+    {d:"medium",text:"Distinguish aggregated NULL vs real NULL using GROUPING()."},
+    {d:"medium",text:"Sales per (region, product) and per region only."},
+    {d:"hard",text:"Pivot sales data using GROUPING SETS logic."},
+    {d:"hard",text:"Compute hierarchical totals (country → state → city)."},
+    {d:"brain",text:"Single query producing daily, monthly, and yearly totals."},
+  ]},
+  { num:"11", title:"Set Operations", problems:[
+    {d:"easy",text:"Combine two employee lists using UNION."},
+    {d:"easy",text:"Use UNION ALL and explain duplicate behavior."},
+    {d:"easy",text:"Find common customers between two tables using INTERSECT."},
+    {d:"easy",text:"Find employees in table A but not in B using EXCEPT."},
+    {d:"medium",text:"Remove duplicates from UNION ALL result."},
+    {d:"medium",text:"Compare performance of UNION vs UNION ALL."},
+    {d:"medium",text:"Use set operations on aggregated results."},
+    {d:"hard",text:"Find symmetric difference between two tables."},
+    {d:"hard",text:"Combine three tables using mixed set operations."},
+    {d:"brain",text:"Identify users active in Jan OR Feb but not both using set logic."},
+  ]},
+  { num:"12", title:"Conditional Logic", problems:[
+    {d:"easy",text:'Classify employees as "Low", "Medium", "High" based on salary using CASE.'},
+    {d:"easy",text:"Replace NULL bonus with 0 using COALESCE."},
+    {d:"easy",text:'Show "Active/Inactive" based on last_login date.'},
+    {d:"easy",text:"Use NULLIF to avoid division by zero in a ratio."},
+    {d:"medium",text:"Conditional aggregation: count active vs inactive users per department."},
+    {d:"medium",text:"Sort employees so NULL salaries appear last."},
+    {d:"medium",text:"Calculate tax slab using multiple CASE conditions."},
+    {d:"hard",text:"Pivot gender counts per department using CASE aggregation."},
+    {d:"hard",text:"Compute percentage growth with NULL-safe division."},
+    {d:"brain",text:"Build a dynamic banding query that groups salaries into deciles without hardcoding ranges."},
+  ]},
+  { num:"13", title:"Constraints Deep Dive", problems:[
+    {d:"easy",text:"Create table with PK, FK, UNIQUE, CHECK constraints."},
+    {d:"easy",text:"Add NOT NULL to an existing column."},
+    {d:"easy",text:"List all foreign keys in a schema."},
+    {d:"easy",text:"Drop a CHECK constraint."},
+    {d:"medium",text:"Find tables missing foreign key indexes."},
+    {d:"medium",text:"Detect duplicate values violating a UNIQUE constraint."},
+    {d:"medium",text:"Add FK with ON DELETE CASCADE and test behavior."},
+    {d:"hard",text:"Identify circular foreign key dependencies."},
+    {d:"hard",text:"Generate script to disable and re-enable constraints in dependency order."},
+    {d:"brain",text:"Validate referential integrity manually without using FK constraints."},
+  ]},
+  { num:"14", title:"Indexing", problems:[
+    {d:"easy",text:"Create index on employee salary."},
+    {d:"easy",text:"List indexes on a table."},
+    {d:"easy",text:"Drop an index."},
+    {d:"easy",text:"Create composite index (dept_id, salary)."},
+    {d:"medium",text:"Find queries not using available indexes."},
+    {d:"medium",text:"Compare performance before/after index using EXPLAIN."},
+    {d:"medium",text:"Identify low-selectivity columns unsuitable for indexing."},
+    {d:"hard",text:"Design covering index for a multi-column filter query."},
+    {d:"hard",text:"Detect redundant indexes."},
+    {d:"brain",text:"Recommend optimal index strategy for a query with JOIN + WHERE + ORDER BY."},
+  ]},
+  { num:"15", title:"Query Optimization", problems:[
+    {d:"easy",text:"Use EXPLAIN to view query plan."},
+    {d:"easy",text:"Rewrite SELECT * to column list."},
+    {d:"easy",text:"Filter before JOIN to reduce rows."},
+    {d:"easy",text:"Move conditions from HAVING to WHERE when possible."},
+    {d:"medium",text:"Compare nested subquery vs JOIN performance."},
+    {d:"medium",text:"Optimize query with OR conditions using UNION."},
+    {d:"medium",text:"Avoid functions on indexed columns in WHERE."},
+    {d:"hard",text:"Identify and fix a Cartesian product."},
+    {d:"hard",text:"Reorder joins for optimal execution."},
+    {d:"brain",text:"Optimize a slow top-N per group query on a 100M row table."},
+  ]},
+  { num:"16", title:"Normalization & Design", problems:[
+    {d:"easy",text:"Identify repeating groups (1NF violation)."},
+    {d:"easy",text:"Split table to remove partial dependency (2NF)."},
+    {d:"easy",text:"Remove transitive dependency (3NF)."},
+    {d:"easy",text:"Identify candidate keys."},
+    {d:"medium",text:"Convert a denormalized sales table into 3NF."},
+    {d:"medium",text:"Design star schema for sales analytics."},
+    {d:"medium",text:"Identify fact vs dimension tables."},
+    {d:"hard",text:"Detect BCNF violations and decompose."},
+    {d:"hard",text:"Design schema for many-to-many relationship with attributes."},
+    {d:"brain",text:"Given query workload, decide which tables to denormalize and justify."},
+  ]},
+  { num:"17", title:"Transactions & ACID", problems:[
+    {d:"easy",text:"Begin a transaction and insert two rows, then COMMIT."},
+    {d:"easy",text:"Perform UPDATE and ROLLBACK."},
+    {d:"easy",text:"Use SAVEPOINT and rollback to it."},
+    {d:"easy",text:"Demonstrate atomicity with a failing statement."},
+    {d:"medium",text:"Transfer money between accounts safely."},
+    {d:"medium",text:"Detect uncommitted changes in another session."},
+    {d:"medium",text:"Show consistency violation example."},
+    {d:"hard",text:"Simulate partial failure and recover using SAVEPOINT."},
+    {d:"hard",text:"Write idempotent transaction for order creation."},
+    {d:"brain",text:"Design transaction logic ensuring ACID for inventory decrement under concurrency."},
+  ]},
+  { num:"18", title:"Concurrency Control", problems:[
+    {d:"easy",text:"Demonstrate row-level lock with SELECT FOR UPDATE."},
+    {d:"easy",text:"Show blocking behavior between two sessions."},
+    {d:"easy",text:"Identify lock types from system views."},
+    {d:"easy",text:"Release lock with COMMIT."},
+    {d:"medium",text:"Simulate dirty read under Read Uncommitted."},
+    {d:"medium",text:"Show non-repeatable read under Read Committed."},
+    {d:"medium",text:"Prevent lost update using proper locking."},
+    {d:"hard",text:"Reproduce phantom read scenario."},
+    {d:"hard",text:"Detect and resolve a deadlock."},
+    {d:"brain",text:"Compare MVCC vs locking behavior using concurrent updates."},
+  ]},
+  { num:"19", title:"Views", problems:[
+    {d:"easy",text:"Create a simple view."},
+    {d:"easy",text:"Query data through a view."},
+    {d:"easy",text:"Drop a view."},
+    {d:"easy",text:"Rename a view."},
+    {d:"medium",text:"Create a view with JOIN."},
+    {d:"medium",text:"Create a view with aggregation."},
+    {d:"medium",text:"Identify updatable vs non-updatable views."},
+    {d:"hard",text:"Create materialized view and refresh it."},
+    {d:"hard",text:"Optimize query using materialized view."},
+    {d:"brain",text:"Implement row-level security using views."},
+  ]},
+  { num:"20", title:"Stored Procedures & Triggers", problems:[
+    {d:"easy",text:"Create stored procedure to insert employee."},
+    {d:"easy",text:"Create function returning salary."},
+    {d:"easy",text:"Execute procedure with parameters."},
+    {d:"easy",text:"Drop a procedure."},
+    {d:"medium",text:"BEFORE INSERT trigger to validate salary."},
+    {d:"medium",text:"AFTER UPDATE trigger to log changes."},
+    {d:"medium",text:"Trigger to prevent delete from critical table."},
+    {d:"hard",text:"Recursive stored procedure for hierarchy."},
+    {d:"hard",text:"Trigger maintaining audit history table."},
+    {d:"brain",text:"Implement soft-delete using trigger and flag column."},
+  ]},
+  { num:"21", title:"CTEs", problems:[
+    {d:"easy",text:"Simple CTE for filtered employees."},
+    {d:"easy",text:"Use CTE for aggregation."},
+    {d:"easy",text:"Replace subquery with CTE."},
+    {d:"easy",text:"Multiple CTEs in one query."},
+    {d:"medium",text:"Recursive CTE for employee hierarchy."},
+    {d:"medium",text:"Generate numbers 1–100 using CTE."},
+    {d:"medium",text:"Find paths in a tree structure."},
+    {d:"hard",text:"Detect cycles in hierarchy using recursive CTE."},
+    {d:"hard",text:"Compute running totals using CTE."},
+    {d:"brain",text:"Solve gaps & islands using recursive CTE."},
+  ]},
+  { num:"22", title:"Advanced SQL Patterns", problems:[
+    {d:"easy",text:"Find nth highest salary."},
+    {d:"easy",text:"Remove duplicates keeping latest."},
+    {d:"easy",text:"Find top 2 per group."},
+    {d:"easy",text:"Identify consecutive dates."},
+    {d:"medium",text:"Pivot rows into columns."},
+    {d:"medium",text:"Unpivot columns into rows."},
+    {d:"medium",text:"Find median salary."},
+    {d:"hard",text:"Gaps & islands for login streaks."},
+    {d:"hard",text:"Detect overlapping date ranges."},
+    {d:"brain",text:"Sessionize user activity into sessions."},
+  ]},
+  { num:"23", title:"Date & Time", problems:[
+    {d:"easy",text:"Extract year from date."},
+    {d:"easy",text:"Add 30 days to current date."},
+    {d:"easy",text:"Find last day of month."},
+    {d:"easy",text:"Difference between two dates."},
+    {d:"medium",text:"Group sales by month."},
+    {d:"medium",text:"Rolling 7-day sum."},
+    {d:"medium",text:"Convert timezone."},
+    {d:"hard",text:"Generate date series between two dates."},
+    {d:"hard",text:"Identify missing dates in time series."},
+    {d:"brain",text:"Compute retention cohorts by signup date."},
+  ]},
+  { num:"24", title:"JSON & SQL", problems:[
+    {d:"easy",text:"Extract JSON field value."},
+    {d:"easy",text:"Filter rows by JSON key."},
+    {d:"easy",text:"Convert JSON to columns."},
+    {d:"easy",text:"Insert JSON data."},
+    {d:"medium",text:"Flatten JSON array."},
+    {d:"medium",text:"Aggregate values inside JSON."},
+    {d:"medium",text:"Index JSON field."},
+    {d:"hard",text:"Join relational table with JSON field values."},
+    {d:"hard",text:"Query nested JSON arrays."},
+    {d:"brain",text:"Build dynamic schema from JSON keys."},
+  ]},
+  { num:"25", title:"Partitioning", problems:[
+    {d:"easy",text:"Create range partitioned table."},
+    {d:"easy",text:"Insert data into partitions."},
+    {d:"easy",text:"Query specific partition."},
+    {d:"easy",text:"Drop old partition."},
+    {d:"medium",text:"Compare partitioned vs non-partitioned query."},
+    {d:"medium",text:"Implement monthly partitioning."},
+    {d:"medium",text:"Use partition pruning."},
+    {d:"hard",text:"Repartition large table."},
+    {d:"hard",text:"Design partition for time-series."},
+    {d:"brain",text:"Optimize query scanning only relevant partitions on billion-row table."},
+  ]},
+  { num:"26", title:"Replication & Scaling", problems:[
+    {d:"easy",text:"Identify read replica usage."},
+    {d:"easy",text:"Route read query to replica."},
+    {d:"easy",text:"Check replication lag."},
+    {d:"easy",text:"Simulate read scaling."},
+    {d:"medium",text:"Design read-heavy workload using replicas."},
+    {d:"medium",text:"Handle write conflicts in multi-master."},
+    {d:"medium",text:"Compare SQL vs NoSQL for logs."},
+    {d:"hard",text:"Design failover strategy."},
+    {d:"hard",text:"Handle eventual consistency in reporting."},
+    {d:"brain",text:"Design globally distributed SQL read architecture."},
+  ]},
+  { num:"27", title:"Security", problems:[
+    {d:"easy",text:"Grant SELECT to user."},
+    {d:"easy",text:"Revoke INSERT privilege."},
+    {d:"easy",text:"Create role and assign user."},
+    {d:"easy",text:"List user privileges."},
+    {d:"medium",text:"Implement column-level security."},
+    {d:"medium",text:"Restrict access using views."},
+    {d:"medium",text:"Prevent SQL injection using prepared logic."},
+    {d:"hard",text:"Row-level security by department."},
+    {d:"hard",text:"Audit sensitive table access."},
+    {d:"brain",text:"Design least-privilege access model for multi-tenant DB."},
+  ]},
+  { num:"28", title:"Data Warehousing", problems:[
+    {d:"easy",text:"Create fact table."},
+    {d:"easy",text:"Create dimension table."},
+    {d:"easy",text:"Load dimension data."},
+    {d:"easy",text:"Join fact with dimension."},
+    {d:"medium",text:"Implement SCD Type 1."},
+    {d:"medium",text:"Implement SCD Type 2."},
+    {d:"medium",text:"Incremental load using watermark."},
+    {d:"hard",text:"Design star schema for e-commerce."},
+    {d:"hard",text:"Handle late-arriving dimension."},
+    {d:"brain",text:"Build daily snapshot fact table."},
+  ]},
+  { num:"29", title:"Performance Tuning", problems:[
+    {d:"easy",text:"Identify slow query using logs."},
+    {d:"easy",text:"Add index to speed filter."},
+    {d:"easy",text:"Limit result set."},
+    {d:"easy",text:"Avoid SELECT *."},
+    {d:"medium",text:"Optimize JOIN order."},
+    {d:"medium",text:"Replace subquery with JOIN."},
+    {d:"medium",text:"Batch inserts vs single row."},
+    {d:"hard",text:"Optimize pagination on large table."},
+    {d:"hard",text:"Reduce temp table usage."},
+    {d:"brain",text:"Tune query scanning 500M rows to sub-second."},
+  ]},
+  { num:"30", title:"Analytics SQL Patterns", problems:[
+    {d:"easy",text:"Daily active users."},
+    {d:"easy",text:"Monthly revenue."},
+    {d:"easy",text:"New users per day."},
+    {d:"easy",text:"Orders per customer."},
+    {d:"medium",text:"Retention cohort table."},
+    {d:"medium",text:"Funnel conversion rates."},
+    {d:"medium",text:"Churn users detection."},
+    {d:"hard",text:"A/B test conversion comparison."},
+    {d:"hard",text:"Lifetime value per user."},
+    {d:"brain",text:"Multi-step funnel with drop-off at each stage."},
+  ]},
+];
+
+const BADGE = {
+  easy:   '<span class="badge badge-easy">🟢 Easy</span>',
+  medium: '<span class="badge badge-medium">🟡 Medium</span>',
+  hard:   '<span class="badge badge-hard">🔴 Hard</span>',
+  brain:  '<span class="badge badge-brain">🧠 Expert</span>',
+};
+const ROW_CLASS = {easy:'row-easy',medium:'row-medium',hard:'row-hard',brain:'row-brain'};
+
+let state = {};
+function loadState() { try { state = JSON.parse(localStorage.getItem('sql_progress')||'{}'); } catch { state={}; } }
+function saveState() { localStorage.setItem('sql_progress', JSON.stringify(state)); }
+function getKey(si,pi) { return si+'_'+pi; }
+function countDone() { return Object.values(state).filter(v=>v.checked).length; }
+
+function updateGlobal() {
+  const done = countDone();
+  const pct = (done/300*100).toFixed(1);
+  document.getElementById('gp-bar').style.width = pct+'%';
+  document.getElementById('gp-num').textContent = done+' / 300';
+  document.getElementById('global-done').textContent = done;
+}
+
+function updateSectionProgress(si) {
+  const bar = document.querySelector('[data-prog="'+si+'"]');
+  const txt = document.querySelector('[data-progtxt="'+si+'"]');
+  if (!bar||!txt) return;
+  let done = 0;
+  SECTIONS[si].problems.forEach((_,pi) => { if(state[getKey(si,pi)]?.checked) done++; });
+  bar.style.width = (done/10*100)+'%';
+  txt.textContent = done+'/10';
+}
+
+function render() {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  SECTIONS.forEach((sec, si) => {
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.dataset.si = si;
+    section.style.animationDelay = Math.min(si*0.04, 0.4)+'s';
+
+    section.innerHTML = `
+      <div class="section-header">
+        <span class="section-num">#${sec.num}</span>
+        <span class="section-title">${sec.title}</span>
+        <span class="section-count">10 problems</span>
+        <button class="section-toggle" data-si="${si}">▾</button>
+      </div>
+      <div class="progress-section">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" data-prog="${si}"></div></div>
+        <span class="progress-text" data-progtxt="${si}">0/10</span>
+      </div>
+      <div class="section-body" data-si="${si}">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:44px">#</th>
+              <th>Problem</th>
+              <th class="col-difficulty">Difficulty</th>
+              <th class="col-status">Done</th>
+              <th class="col-notes">Notes</th>
+            </tr></thead>
+            <tbody id="tbody-${si}"></tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    main.appendChild(section);
+
+    const tbody = document.getElementById('tbody-'+si);
+    sec.problems.forEach((prob, pi) => {
+      const key = getKey(si,pi);
+      const checked = !!(state[key]?.checked);
+      const note = state[key]?.note||'';
+      const tr = document.createElement('tr');
+      tr.className = ROW_CLASS[prob.d] + (checked?' completed-row':'');
+      tr.dataset.si=si; tr.dataset.pi=pi; tr.dataset.diff=prob.d;
+      tr.dataset.text=prob.text.toLowerCase(); tr.dataset.checked=checked?'1':'0';
+      tr.innerHTML = `
+        <td class="col-num">${si*10+pi+1}</td>
+        <td class="col-problem">${prob.text}</td>
+        <td class="col-difficulty">${BADGE[prob.d]}</td>
+        <td class="col-status"><div class="check-wrap"><input type="checkbox" ${checked?'checked':''} data-key="${key}" data-si="${si}" data-pi="${pi}"></div></td>
+        <td class="col-notes"><input class="col-notes-inner" type="text" placeholder="Add notes..." value="${note.replace(/"/g,'&quot;')}" data-key="${key}"></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    updateSectionProgress(si);
+  });
+
+  updateGlobal();
+
+  main.addEventListener('change', e => {
+    if (e.target.type!=='checkbox') return;
+    const key=e.target.dataset.key, si=+e.target.dataset.si;
+    if (!state[key]) state[key]={};
+    state[key].checked=e.target.checked;
+    const tr=e.target.closest('tr');
+    tr.dataset.checked=e.target.checked?'1':'0';
+    if(e.target.checked) tr.classList.add('completed-row');
+    else tr.classList.remove('completed-row');
+    saveState(); updateSectionProgress(si); updateGlobal();
+  });
+
+  main.addEventListener('input', e => {
+    if (!e.target.classList.contains('col-notes-inner')) return;
+    const key=e.target.dataset.key;
+    if (!state[key]) state[key]={};
+    state[key].note=e.target.value;
+    saveState();
+  });
+
+  main.addEventListener('click', e => {
+    const btn=e.target.closest('.section-toggle');
+    if (!btn) return;
+    const si=btn.dataset.si;
+    const body=main.querySelector('.section-body[data-si="'+si+'"]');
+    btn.classList.toggle('collapsed');
+    body.classList.toggle('hidden');
+  });
+}
+
+let currentFilter='all';
+function applyFilters() {
+  const q=document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('tbody tr').forEach(tr => {
+    const matchDiff = currentFilter==='all'||tr.dataset.diff===currentFilter||(currentFilter==='unsolved'&&tr.dataset.checked!=='1');
+    const matchText = !q||tr.dataset.text.includes(q);
+    tr.style.display=(matchDiff&&matchText)?'':'none';
+  });
+  document.querySelectorAll('.section').forEach(sec => {
+    const rows=sec.querySelectorAll('tbody tr');
+    const visible=[...rows].some(r=>r.style.display!=='none');
+    sec.style.display=visible?'':'none';
+  });
+}
+
+document.getElementById('search').addEventListener('input', applyFilters);
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter=btn.dataset.f;
+    applyFilters();
+  });
+});
+
+loadState();
+render();
+</script>
+</body>
+</html>
